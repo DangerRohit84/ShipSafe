@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ShipSafe — AI Release Readiness System</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+    background: #0f1117; color: #e2e8f0;
+    font-size: 15px; line-height: 1.6;
+  }
+
+  /* ── Nav ── */
+  nav {
+    background: #161b27; border-bottom: 1px solid #1e293b;
+    padding: 0 32px; height: 56px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .nav-logo { font-size: 20px; font-weight: 800; color: #f1f5f9; }
+  .nav-logo span { color: #3b82f6; }
+  .nav-links { display: flex; gap: 8px; }
+  .nav-link {
+    padding: 6px 14px; border-radius: 6px; font-size: 13px;
+    color: #94a3b8; text-decoration: none; border: 1px solid transparent;
+  }
+  .nav-link:hover { background: #1e293b; color: #e2e8f0; }
+  .nav-link.cta {
+    background: #1d4ed8; color: #fff; border-color: #2563eb;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    padding: 80px 32px 60px;
+    text-align: center;
+    max-width: 900px; margin: 0 auto;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: #1e3a5f; color: #60a5fa;
+    font-size: 12px; font-weight: 700; letter-spacing: 1px;
+    padding: 4px 14px; border-radius: 999px;
+    border: 1px solid #1d4ed8; margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-size: 64px; font-weight: 900; letter-spacing: -2px; line-height: 1;
+    margin-bottom: 8px;
+  }
+  .hero h1 span { color: #3b82f6; }
+  .hero-sub {
+    font-size: 22px; color: #64748b; margin: 16px 0 40px;
+    font-style: italic;
+  }
+
+  /* score display */
+  .score-hero {
+    display: flex; align-items: center; justify-content: center;
+    gap: 32px; margin: 40px 0;
+  }
+  .score-block { text-align: center; }
+  .score-num { font-size: 96px; font-weight: 900; line-height: 1; }
+  .score-red   { color: #ef4444; }
+  .score-green { color: #22c55e; }
+  .score-label { font-size: 14px; font-weight: 700; margin-top: 6px; }
+  .score-label.red   { color: #ef4444; }
+  .score-label.green { color: #22c55e; }
+  .score-arrow { font-size: 48px; color: #334155; }
+  .score-delta {
+    background: #052e16; color: #22c55e;
+    border: 1px solid #14532d; border-radius: 8px;
+    padding: 8px 20px; font-size: 14px; font-weight: 700;
+  }
+
+  .hero-cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn {
+    display: inline-block; padding: 12px 28px; border-radius: 8px;
+    font-size: 14px; font-weight: 700; text-decoration: none;
+  }
+  .btn-primary { background: #1d4ed8; color: #fff; }
+  .btn-secondary { background: #1e293b; color: #e2e8f0; border: 1px solid #334155; }
+
+  /* ── Section ── */
+  section { max-width: 900px; margin: 0 auto; padding: 60px 32px; }
+  .section-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 3px;
+    text-transform: uppercase; color: #3b82f6; margin-bottom: 12px;
+  }
+  h2 { font-size: 36px; font-weight: 800; letter-spacing: -1px; margin-bottom: 8px; }
+  .section-sub { font-size: 16px; color: #64748b; margin-bottom: 32px; }
+  hr.div { border: none; border-top: 1px solid #1e293b; margin: 0; }
+
+  /* ── How it works ── */
+  .steps { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+  .step-card {
+    background: #161b27; border: 1px solid #1e293b;
+    border-radius: 12px; padding: 28px;
+  }
+  .step-num { font-size: 11px; font-weight: 700; letter-spacing: 2px;
+    color: #3b82f6; text-transform: uppercase; margin-bottom: 12px; }
+  .step-icon { font-size: 32px; margin-bottom: 12px; }
+  .step-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+  .step-body { font-size: 13px; color: #64748b; line-height: 1.6; }
+
+  /* ── Agents ── */
+  .agents { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .agent-card {
+    background: #161b27; border: 1px solid #1e293b;
+    border-radius: 10px; padding: 20px 24px;
+    display: flex; gap: 16px; align-items: flex-start;
+  }
+  .agent-icon { font-size: 28px; }
+  .agent-name { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .agent-role { font-size: 12px; color: #475569; }
+  .agent-weight {
+    display: inline-block; margin-top: 8px;
+    background: #1e3a5f; color: #60a5fa;
+    font-size: 11px; font-weight: 700; padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  /* ── Bob features ── */
+  .features { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .feat {
+    background: #161b27; border: 1px solid #1e293b;
+    border-radius: 10px; padding: 20px;
+  }
+  .feat-icon { font-size: 24px; margin-bottom: 10px; }
+  .feat-title { font-size: 14px; font-weight: 700; color: #60a5fa; margin-bottom: 6px; }
+  .feat-body { font-size: 12px; color: #64748b; line-height: 1.5; }
+
+  /* ── Formula ── */
+  .formula {
+    background: #161b27; border: 1px solid #1e293b;
+    border-radius: 12px; padding: 28px 36px;
+    font-family: 'Courier New', monospace; font-size: 16px;
+    line-height: 2.2; margin-bottom: 20px;
+  }
+  .f-blue { color: #60a5fa; font-weight: 700; }
+  .f-red  { color: #ef4444; font-weight: 900; font-size: 20px; }
+  .f-green{ color: #22c55e; font-weight: 900; font-size: 20px; }
+  .thresholds { display: flex; gap: 12px; }
+  .thr {
+    flex: 1; text-align: center; padding: 12px;
+    border-radius: 8px; font-size: 14px; font-weight: 700;
+  }
+  .thr-green  { background: #052e16; color: #22c55e; border: 1px solid #14532d; }
+  .thr-yellow { background: #1c1400; color: #f59e0b; border: 1px solid #713f12; }
+  .thr-red    { background: #1a0505; color: #ef4444; border: 1px solid #7f1d1d; }
+
+  /* ── Compare ── */
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    font-size: 13px; font-weight: 700; padding: 12px 20px;
+    background: #161b27; border: 1px solid #1e293b; color: #94a3b8;
+    text-align: center;
+  }
+  thead th.hl { background: #1a1f2e; color: #3b82f6; border-color: #1d4ed8; }
+  thead th:first-child { text-align: left; }
+  tbody td {
+    font-size: 13px; padding: 11px 20px;
+    border: 1px solid #1e293b; text-align: center; color: #64748b;
+  }
+  tbody td:first-child { text-align: left; color: #e2e8f0; font-weight: 600; }
+  tbody tr:nth-child(even) td { background: #0d1117; }
+  .tick { color: #22c55e; font-size: 16px; font-weight: 900; }
+  .cross{ color: #ef4444; font-size: 16px; }
+
+  /* ── Report embed ── */
+  .report-embed {
+    background: #161b27; border: 1px solid #1e293b;
+    border-radius: 12px; overflow: hidden;
+  }
+  .report-topbar {
+    background: #1a1f2e; padding: 10px 16px;
+    display: flex; align-items: center; gap: 8px;
+    border-bottom: 1px solid #1e293b;
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  iframe {
+    width: 100%; height: 600px; border: none; display: block;
+  }
+
+  /* ── Footer ── */
+  footer {
+    background: #161b27; border-top: 1px solid #1e293b;
+    padding: 32px; text-align: center;
+    font-size: 12px; color: #334155;
+  }
+  footer strong { color: #475569; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Ship<span>Safe</span></div>
+  <div class="nav-links">
+    <a class="nav-link" href="#how">How it works</a>
+    <a class="nav-link" href="#agents">Agents</a>
+    <a class="nav-link" href="#report">Live Report</a>
+    <a class="nav-link" href="#formula">Formula</a>
+    <a class="nav-link cta" href="https://github.com/DangerRohit84/ShipSafe">GitHub</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">IBM Bob 2.0 Hackathon · September 2026</div>
+  <h1>Ship<span>Safe</span></h1>
+  <div class="hero-sub">One number. One decision. Zero Friday fear.</div>
+
+  <div class="score-hero">
+    <div class="score-block">
+      <div class="score-num score-red">38</div>
+      <div class="score-label red">🔴 DO NOT SHIP</div>
+    </div>
+    <div class="score-arrow">→</div>
+    <div class="score-block">
+      <div class="score-num score-green">92</div>
+      <div class="score-label green">🟢 SAFE TO SHIP</div>
+    </div>
+    <div>
+      <div class="score-delta">+54 pts</div>
+      <div style="font-size:12px;color:#475569;margin-top:6px;text-align:center;">in under 2 minutes</div>
+    </div>
+  </div>
+
+  <div class="hero-cta">
+    <a class="btn btn-primary" href="#report">View Live Report ↓</a>
+    <a class="btn btn-secondary" href="https://github.com/DangerRohit84/ShipSafe">View on GitHub</a>
+  </div>
+</div>
+<hr class="div">
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="section-label">How it works</div>
+  <h2>Scan → Score → Fix</h2>
+  <div class="section-sub">Three steps. One command. Complete release confidence.</div>
+  <div class="steps">
+    <div class="step-card">
+      <div class="step-num">Step 1</div>
+      <div class="step-icon">🔍</div>
+      <div class="step-title">Scan</div>
+      <div class="step-body">IBM Bob Captain spawns 3 specialist AI agents in parallel. Security scans for OWASP Top 10. Quality checks complexity and dead code. Tests measure coverage and critical paths.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">Step 2</div>
+      <div class="step-icon">🎯</div>
+      <div class="step-title">Score</div>
+      <div class="step-body">Captain collects all 3 reports and applies the weighted formula: Security 40% + Quality 35% + Tests 25%. Delivers a single Release Readiness Score with a RED or GREEN verdict.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">Step 3</div>
+      <div class="step-icon">🔧</div>
+      <div class="step-title">Fix</div>
+      <div class="step-body">Captain auto-fixes safe issues: hardcoded secrets, JWT expiry, error leakage, .gitignore. Generates 15 critical security tests. Lists manual items with estimated fix times.</div>
+    </div>
+  </div>
+</section>
+<hr class="div">
+
+<!-- AGENTS -->
+<section id="agents">
+  <div class="section-label">Architecture</div>
+  <h2>4 IBM Bob Custom Modes</h2>
+  <div class="section-sub">Each agent has a dedicated role, scoped tool permissions, and reference skill files.</div>
+  <div class="agents">
+    <div class="agent-card">
+      <div class="agent-icon">🎖️</div>
+      <div>
+        <div class="agent-name">Captain Mode</div>
+        <div class="agent-role">Orchestrates all 3 agents as parallel subagents. Calculates score. Applies auto-fixes. Generates HTML report.</div>
+        <div class="agent-weight">read · edit · execute · mcp · skill · subagent</div>
+      </div>
+    </div>
+    <div class="agent-card">
+      <div class="agent-icon">🔒</div>
+      <div>
+        <div class="agent-name">Security Agent</div>
+        <div class="agent-role">OWASP Top 10 scanner. Finds SQL injection, path traversal, hardcoded secrets, broken auth, IDOR.</div>
+        <div class="agent-weight">Weight: 40%</div>
+      </div>
+    </div>
+    <div class="agent-card">
+      <div class="agent-icon">🔍</div>
+      <div>
+        <div class="agent-name">Quality Agent</div>
+        <div class="agent-role">Measures cyclomatic complexity, detects dead code, checks error handling completeness.</div>
+        <div class="agent-weight">Weight: 35%</div>
+      </div>
+    </div>
+    <div class="agent-card">
+      <div class="agent-icon">🧪</div>
+      <div>
+        <div class="agent-name">Test Agent</div>
+        <div class="agent-role">Runs test suite, measures coverage, checks for critical security rejection tests.</div>
+        <div class="agent-weight">Weight: 25%</div>
+      </div>
+    </div>
+  </div>
+</section>
+<hr class="div">
+
+<!-- LIVE REPORT -->
+<section id="report">
+  <div class="section-label">Live Demo</div>
+  <h2>Release Report — AFTER ShipSafe</h2>
+  <div class="section-sub">This is the actual HTML artifact generated by IBM Bob's Captain Mode. Score: 92 🟢 SAFE TO SHIP.</div>
+  <div class="report-embed">
+    <div class="report-topbar">
+      <span class="dot" style="background:#ef4444"></span>
+      <span class="dot" style="background:#f59e0b"></span>
+      <span class="dot" style="background:#22c55e"></span>
+      <span style="font-size:12px;color:#475569;margin-left:8px;">ShipSafe Release Report — generated by IBM Bob 2.0 Captain Mode</span>
+    </div>
+    <iframe src="demo-report-AFTER.html" title="ShipSafe Release Report"></iframe>
+  </div>
+</section>
+<hr class="div">
+
+<!-- FORMULA -->
+<section id="formula">
+  <div class="section-label">Transparent Scoring</div>
+  <h2>The Formula</h2>
+  <div class="section-sub">Not a black box. Every point is explained. Every deduction is shown.</div>
+  <div class="formula">
+    Release Score = (<span class="f-blue">Security</span> × 0.40) + (<span class="f-blue">Quality</span> × 0.35) + (<span class="f-blue">Tests</span> × 0.25)<br>
+    <span style="color:#334155;font-size:13px;">
+      BEFORE: (20 × 0.40) + (55 × 0.35) + (8 × 0.25) = <span class="f-red">38</span>
+      &nbsp;&nbsp;&nbsp;→&nbsp;&nbsp;&nbsp;
+      AFTER: (76 × 0.40) + (85 × 0.35) + (80 × 0.25) = <span class="f-green">92</span>
+    </span>
+  </div>
+  <div class="thresholds">
+    <div class="thr thr-green">score ≥ 80 → 🟢 SAFE TO SHIP</div>
+    <div class="thr thr-yellow">score 70–79 → 🟡 SHIP WITH CAUTION</div>
+    <div class="thr thr-red">score &lt; 70 → 🔴 DO NOT SHIP</div>
+  </div>
+</section>
+<hr class="div">
+
+<!-- COMPARISON -->
+<section>
+  <div class="section-label">Why ShipSafe</div>
+  <h2>No tool does all of this</h2>
+  <div class="section-sub">SonarQube gives lists. Snyk gives lists. ShipSafe gives a decision.</div>
+  <table>
+    <thead>
+      <tr>
+        <th>Capability</th>
+        <th>SonarQube</th>
+        <th>Snyk</th>
+        <th class="hl">ShipSafe</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Single pass/fail decision</td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="tick">✓</span></td></tr>
+      <tr><td>Auto-fixes code automatically</td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="tick">✓</span></td></tr>
+      <tr><td>Generates missing security tests</td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="tick">✓</span></td></tr>
+      <tr><td>Multi-agent AI team</td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="tick">✓</span></td></tr>
+      <tr><td>Transparent scoring formula</td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="tick">✓</span></td></tr>
+      <tr><td>Runs inside your IDE</td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="tick">✓</span></td></tr>
+    </tbody>
+  </table>
+</section>
+<hr class="div">
+
+<!-- IBM BOB FEATURES -->
+<section>
+  <div class="section-label">IBM Bob 2.0</div>
+  <h2>Every advanced feature — working together</h2>
+  <div class="features">
+    <div class="feat"><div class="feat-icon">🧩</div><div class="feat-title">4 Custom Modes</div><div class="feat-body">Captain + 3 specialists in custom_modes.yaml with scoped permissions.</div></div>
+    <div class="feat"><div class="feat-icon">📚</div><div class="feat-title">4 Skills + 12 Files</div><div class="feat-body">OWASP checklist, complexity thresholds, critical paths, scoring formula.</div></div>
+    <div class="feat"><div class="feat-icon">🤖</div><div class="feat-title">Parallel Subagents</div><div class="feat-body">Captain spawns 3 agents simultaneously in isolated contexts.</div></div>
+    <div class="feat"><div class="feat-icon">🔌</div><div class="feat-title">Custom MCP Server</div><div class="feat-body">5 tools: run_tests, scan_secrets, check_complexity, audit_deps, list_source_files.</div></div>
+    <div class="feat"><div class="feat-icon">✏️</div><div class="feat-title">File Auto-Fix</div><div class="feat-body">Captain writes fixes directly to source files using apply_diff and execute_command.</div></div>
+    <div class="feat"><div class="feat-icon">📊</div><div class="feat-title">HTML Artifact</div><div class="feat-body">create_html_artifact generates a shareable release report inside Bob's chat.</div></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <strong>ShipSafe</strong> — Built on IBM Bob 2.0 &nbsp;·&nbsp;
+  IBM Bob 2.0 Hackathon September 2026 &nbsp;·&nbsp;
+  <a href="https://github.com/DangerRohit84/ShipSafe" style="color:#3b82f6;">github.com/DangerRohit84/ShipSafe</a>
+</footer>
+
+</body>
+</html>
