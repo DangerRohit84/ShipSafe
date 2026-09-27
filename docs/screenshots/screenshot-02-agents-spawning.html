@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<title>ShipSafe — 02 Agents Spawning</title>
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+      background: #0f1117; color: #e2e8f0;
+      padding: 0; margin: 0; min-height: 100vh;
+    }
+    .screen {
+      width: 1280px; min-height: 720px;
+      background: #0f1117;
+      display: flex; flex-direction: column;
+    }
+    /* IDE chrome */
+    .titlebar {
+      background: #1a1f2e; height: 32px; display: flex;
+      align-items: center; padding: 0 16px; gap: 8px;
+      border-bottom: 1px solid #0d1117; flex-shrink: 0;
+    }
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot.red { background: #ef4444; }
+    .dot.yellow { background: #f59e0b; }
+    .dot.green { background: #22c55e; }
+    .titletext { font-size: 12px; color: #64748b; margin-left: 8px; }
+    .ide-body { display: flex; flex: 1; overflow: hidden; }
+    /* Sidebar */
+    .sidebar {
+      width: 220px; background: #161b27; border-right: 1px solid #1e293b;
+      flex-shrink: 0; padding: 8px 0;
+    }
+    .sidebar-title { font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; color: #475569; padding: 8px 16px; }
+    .file-item { font-size: 12px; padding: 4px 16px 4px 24px; color: #94a3b8;
+      cursor: pointer; display: flex; align-items: center; gap: 6px; }
+    .file-item.active { background: #1e293b; color: #e2e8f0; }
+    .file-item .icon { font-size: 11px; }
+    /* Editor */
+    .editor { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .editor-tabs { background: #161b27; display: flex; border-bottom: 1px solid #1e293b; }
+    .tab { font-size: 12px; padding: 6px 16px; color: #64748b;
+      border-right: 1px solid #1e293b; }
+    .tab.active { background: #0f1117; color: #e2e8f0;
+      border-top: 2px solid #3b82f6; padding-top: 4px; }
+    .code-area { flex: 1; padding: 16px; overflow: auto; font-family: 'Courier New', monospace;
+      font-size: 13px; line-height: 1.7; }
+    .ln { color: #334155; display: inline-block; width: 32px;
+      text-align: right; margin-right: 16px; user-select: none; }
+    .kw { color: #c792ea; }
+    .str { color: #c3e88d; }
+    .str.danger { color: #ef4444; font-weight: bold; }
+    .cmt { color: #546e7a; font-style: italic; }
+    .fn { color: #82aaff; }
+    .var { color: #f07178; }
+    .highlight-line { background: #2d1515; display: block;
+      margin: 0 -16px; padding: 0 16px; }
+    .highlight-line-green { background: #0d2818; display: block;
+      margin: 0 -16px; padding: 0 16px; }
+    /* Bob chat panel */
+    .chat-panel {
+      width: 400px; background: #161b27; border-left: 1px solid #1e293b;
+      display: flex; flex-direction: column;
+    }
+    .chat-header { padding: 10px 16px; border-bottom: 1px solid #1e293b;
+      font-size: 12px; font-weight: 700; color: #94a3b8;
+      display: flex; align-items: center; gap: 8px; }
+    .mode-badge { background: #1e3a5f; color: #60a5fa; font-size: 10px;
+      padding: 2px 8px; border-radius: 4px; font-weight: 700; }
+    .chat-body { flex: 1; padding: 12px; overflow: auto; display: flex;
+      flex-direction: column; gap: 10px; }
+    .msg { border-radius: 8px; padding: 10px 12px; font-size: 12px; line-height: 1.6; }
+    .msg.user { background: #1e293b; color: #e2e8f0; align-self: flex-end;
+      max-width: 85%; }
+    .msg.bob { background: #111827; color: #94a3b8; border: 1px solid #1e293b; }
+    .msg.bob .label { font-size: 10px; color: #3b82f6; font-weight: 700;
+      margin-bottom: 4px; letter-spacing: 1px; text-transform: uppercase; }
+    .sub-box { background: #0f172a; border: 1px solid #1e3a5f; border-radius: 6px;
+      padding: 8px 10px; margin-top: 6px; font-size: 11px; }
+    .sub-box .sub-title { color: #60a5fa; font-weight: 700; margin-bottom: 2px; }
+    .sub-box .sub-desc { color: #475569; }
+    .badge { display: inline-block; padding: 1px 6px; border-radius: 3px;
+      font-size: 10px; font-weight: 700; text-transform: uppercase; }
+    .badge.critical { background: #3f0f0f; color: #ef4444; border: 1px solid #7f1d1d; }
+    .badge.high { background: #3f1f0f; color: #f97316; border: 1px solid #7c2d12; }
+    .badge.fixed { background: #052e16; color: #22c55e; border: 1px solid #14532d; }
+    .score-big { font-size: 48px; font-weight: 900; line-height: 1; }
+    .score-red { color: #ef4444; }
+    .score-green { color: #22c55e; }
+    .verdict-box { border-radius: 8px; padding: 12px 16px; margin-top: 8px; }
+    .verdict-box.red { background: #1a0a0a; border: 2px solid #ef4444; }
+    .verdict-box.green { background: #001a0d; border: 2px solid #22c55e; }
+    .verdict-title { font-size: 18px; font-weight: 800; }
+    .chat-input { padding: 10px 12px; border-top: 1px solid #1e293b;
+      display: flex; gap: 8px; align-items: center; }
+    .input-box { flex: 1; background: #1e293b; border: 1px solid #334155;
+      border-radius: 6px; padding: 6px 10px; font-size: 12px; color: #94a3b8; }
+    .caption { background: #0d1117; padding: 8px 24px; font-size: 13px;
+      color: #3b82f6; font-weight: 600; text-align: center;
+      letter-spacing: 0.5px; border-top: 1px solid #1e293b; }
+  </style>
+
+</head><body>
+<div class="screen">
+  <div class="titlebar">
+    <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+    <span class="titletext">IBM Bob 2.0 — ShipSafe</span>
+  </div>
+  
+  <div class="ide-body">
+    <div class="sidebar">
+      <div class="sidebar-title">Explorer</div>
+      <div class="file-item" style="color:#60a5fa;font-weight:700;padding-left:8px;">📁 shipsafe</div>
+      <div class="file-item" style="padding-left:16px;color:#64748b;">📁 .bob</div>
+      <div class="file-item" style="padding-left:16px;color:#64748b;">📁 demo-app</div>
+      <div class="file-item" style="padding-left:24px;color:#64748b;">📁 src</div>
+      <div class="file-item" style="padding-left:32px;color:#64748b;">📁 routes</div>
+      <div class="file-item active"><span class="icon">📄</span>users.js</div><div class="file-item"><span class="icon">📄</span>products.js</div><div class="file-item"><span class="icon">📄</span>orders.js</div>
+      <div class="file-item" style="padding-left:32px;color:#64748b;">📁 utils</div>
+      <div class="file-item" style="padding-left:16px;color:#64748b;">📁 scripts</div>
+      <div class="file-item" style="padding-left:16px;color:#64748b;">📁 mcp-server</div>
+    </div>
+    <div class="editor">
+      <div class="editor-tabs">
+        <div class="tab active">users.js</div>
+      </div>
+      <div class="code-area">
+<span><span class="ln">1</span><span class="cmt">// routes/users.js — BEFORE state: SQL injection + no input validation</span></span>
+<span><span class="ln">2</span><span class="kw">const</span> express = <span class="fn">require</span>(<span class="str">'express'</span>);</span>
+<span><span class="ln">3</span><span class="kw">const</span> router = express.<span class="fn">Router</span>();</span>
+<span><span class="ln">4</span><span class="kw">const</span> sqlite3 = <span class="fn">require</span>(<span class="str">'sqlite3'</span>).verbose();</span>
+<span><span class="ln">5</span><span class="kw">const</span> jwt = <span class="fn">require</span>(<span class="str">'jsonwebtoken'</span>);</span>
+<span><span class="ln">6</span></span>
+<span class="highlight-line"><span><span class="ln">7</span><span class="kw">const</span> JWT_SECRET = <span class="str danger">'supersecret123'</span>; <span class="cmt">// ⚠️ CRITICAL: hardcoded secret</span></span></span>
+<span><span class="ln">8</span></span>
+<span><span class="ln">9</span>router.<span class="fn">post</span>(<span class="str">'/login'</span>, (req, res) => {</span>
+<span><span class="ln">10</span>  <span class="kw">const</span> { username, password } = req.body;</span>
+<span><span class="ln">11</span>  <span class="kw">const</span> db = <span class="kw">new</span> sqlite3.<span class="fn">Database</span>(<span class="str">'./users.db'</span>);</span>
+<span><span class="ln">12</span></span>
+<span class="highlight-line"><span><span class="ln">13</span>  <span class="cmt">// ⚠️ SQL INJECTION: user input directly concatenated into query</span></span></span>
+<span class="highlight-line"><span><span class="ln">14</span>  <span class="kw">const</span> query = <span class="str danger">`SELECT * FROM users WHERE username = '${username}' AND password = '${password}'`</span>;</span></span>
+<span><span class="ln">15</span></span>
+<span><span class="ln">16</span>  db.<span class="fn">get</span>(query, (err, user) => {</span>
+<span><span class="ln">17</span>    <span class="kw">if</span> (err) {</span>
+<span class="highlight-line"><span><span class="ln">18</span>      <span class="kw">return</span> res.<span class="fn">status</span>(500).<span class="fn">json</span>({ error: err.message }); <span class="cmt">// ⚠️ leaks DB errors</span></span></span>
+<span><span class="ln">19</span>    }</span>
+<span><span class="ln">20</span>    <span class="kw">if</span> (!user) <span class="kw">return</span> res.<span class="fn">status</span>(401).<span class="fn">json</span>({ message: <span class="str">'Invalid credentials'</span> });</span>
+<span><span class="ln">21</span></span>
+<span class="highlight-line"><span><span class="ln">22</span>    <span class="cmt">// ⚠️ JWT never expires — no expiresIn</span></span></span>
+<span class="highlight-line"><span><span class="ln">23</span>    <span class="kw">const</span> token = jwt.<span class="fn">sign</span>({ userId: user.id, role: user.role }, JWT_SECRET);</span></span>
+<span><span class="ln">24</span>    res.<span class="fn">json</span>({ token, user }); <span class="cmt">// ⚠️ returns full user including password hash</span></span>
+<span><span class="ln">25</span>  });</span>
+<span><span class="ln">26</span>});</span></div>
+    </div>
+    <div class="chat-panel">
+      <div class="chat-header">
+        🤖 IBM Bob 2.0
+        <span class="mode-badge">🎖️ ShipSafe Captain</span>
+      </div>
+      <div class="chat-body">
+  <div class="msg user">Run ShipSafe scan on ./demo-app</div>
+  <div class="msg bob">
+    <div class="label">🎖️ Captain — Spawning Agents</div>
+    Activating release scan protocol. Spawning 3 specialist agents in parallel...
+    <div class="sub-box">
+      <div class="sub-title">🔒 Security Agent — subagent-1</div>
+      <div class="sub-desc">OWASP Top 10 scanner · secret detector · auth reviewer</div>
+    </div>
+    <div class="sub-box">
+      <div class="sub-title">🔍 Quality Agent — subagent-2</div>
+      <div class="sub-desc">Complexity analyser · dead code · error handling</div>
+    </div>
+    <div class="sub-box">
+      <div class="sub-title">🧪 Test Agent — subagent-3</div>
+      <div class="sub-desc">Coverage analyst · critical path checker</div>
+    </div>
+  </div></div>
+      <div class="chat-input">
+        <div class="input-box">Run ShipSafe scan on ./demo-app</div>
+      </div>
+    </div>
+  </div>
+  <div class="caption">Screenshot 2 — Captain spawning 3 IBM Bob subagents in parallel (IBM Bob subagent feature)</div>
+</div>
+</body></html>

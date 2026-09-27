@@ -15,7 +15,8 @@
     "demo:reset": "git checkout -- demo-app/src/",
     "mcp:start": "cd mcp-server && node src/index.js",
     "validate": "node scripts/validate-project.js",
-    "demo": "node scripts/demo-runner.js"
+    "demo": "node scripts/demo-runner.js",
+    "screenshots": "node scripts/generate-screenshots.js"
   },
   "workspaces": [
     "mcp-server",
