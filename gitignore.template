@@ -1,0 +1,11 @@
+# gitignore contents — copy this to .gitignore before committing
+node_modules/
+coverage/
+*.log
+.DS_Store
+Thumbs.db
+
+# Environment files — NEVER commit real secrets
+.env
+*.env
+!env.demo

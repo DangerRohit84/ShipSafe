@@ -1,0 +1,17 @@
+{
+  "name": "shipsafe-mcp-server",
+  "version": "1.0.0",
+  "description": "ShipSafe MCP Server — exposes static analysis tools to IBM Bob agents",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "name": "shipsafe",
+  "version": "1.0.0",
+  "description": "ShipSafe — AI-Powered Release Readiness System built on IBM Bob 2.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "setup": "npm run setup:mcp && npm run setup:demo",
+    "setup:mcp": "cd mcp-server && npm install",
+    "setup:demo": "cd demo-app && npm install",
+    "demo:scan": "node scripts/autofix.js --project ./demo-app",
+    "demo:fix": "node scripts/autofix.js --project ./demo-app",
+    "demo:tests": "node scripts/generate-tests.js --project ./demo-app",
+    "demo:test-run": "cd demo-app && npm test",
+    "demo:reset": "git checkout -- demo-app/src/",
+    "mcp:start": "cd mcp-server && node src/index.js",
+    "validate": "node scripts/validate-project.js"
+  },
+  "workspaces": [
+    "mcp-server",
+    "demo-app"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "ibm-bob",
+    "hackathon",
+    "release-readiness",
+    "security-scanning",
+    "multi-agent",
+    "ai-assisted-development"
+  ],
+  "author": "ShipSafe Team — IBM Bob 2.0 Hackathon 2026",
+  "license": "MIT"
+}

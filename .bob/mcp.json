@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "shipsafe": {
+      "command": "node",
+      "args": ["mcp-server/src/index.js"],
+      "description": "ShipSafe static analysis tools — run_tests, scan_secrets, check_complexity, audit_deps, list_source_files",
+      "trust": false,
+      "includeTools": [
+        "run_tests",
+        "scan_secrets",
+        "check_complexity",
+        "audit_deps",
+        "list_source_files"
+      ]
+    }
+  }
+}
