@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ShipSafe — Pitch Deck</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "Segoe UI", system-ui, sans-serif; background: #0f1117; color: #e2e8f0; }
+
+  .slide {
+    width: 1280px;
+    height: 720px;
+    background: #0f1117;
+    padding: 60px 72px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    page-break-after: always;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* slide decorative accent line */
+  .slide::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #3b82f6, #7c3aed, #22c55e);
+  }
+
+  .slide-num {
+    position: absolute;
+    bottom: 24px; right: 36px;
+    font-size: 11px;
+    color: #334155;
+    letter-spacing: 1px;
+  }
+
+  .ibm-tag {
+    position: absolute;
+    bottom: 24px; left: 36px;
+    font-size: 11px;
+    color: #334155;
+    letter-spacing: 1px;
+  }
+
+  /* Typography */
+  .eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #3b82f6;
+    margin-bottom: 16px;
+  }
+
+  h1 { font-size: 64px; font-weight: 900; letter-spacing: -2px; line-height: 1; }
+  h2 { font-size: 42px; font-weight: 800; letter-spacing: -1px; line-height: 1.1; }
+  h3 { font-size: 22px; font-weight: 700; color: #94a3b8; margin-top: 16px; line-height: 1.5; }
+
+  .accent { color: #3b82f6; }
+  .red    { color: #ef4444; }
+  .green  { color: #22c55e; }
+  .muted  { color: #475569; }
+
+  /* Slide 1 — Title */
+  .title-score {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    margin-top: 32px;
+  }
+  .big-score {
+    font-size: 96px;
+    font-weight: 900;
+    line-height: 1;
+  }
+  .arrow-big { font-size: 48px; color: #334155; }
+  .tagline { font-size: 18px; color: #64748b; margin-top: 24px; line-height: 1.6; }
+
+  /* Slide 2 — Problem */
+  .problem-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 24px;
+    margin-top: 32px;
+  }
+  .prob-card {
+    background: #161b27;
+    border: 1px solid #1e293b;
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .prob-icon { font-size: 32px; margin-bottom: 12px; }
+  .prob-title { font-size: 16px; font-weight: 700; color: #e2e8f0; margin-bottom: 8px; }
+  .prob-body { font-size: 13px; color: #64748b; line-height: 1.6; }
+  .quote-box {
+    background: #1a1f2e;
+    border-left: 4px solid #3b82f6;
+    padding: 20px 28px;
+    border-radius: 0 8px 8px 0;
+    margin-top: 28px;
+    font-size: 18px;
+    font-style: italic;
+    color: #94a3b8;
+  }
+
+  /* Slide 3 — Solution */
+  .arch-box {
+    background: #161b27;
+    border: 1px solid #1e293b;
+    border-radius: 12px;
+    padding: 28px 36px;
+    margin-top: 28px;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    justify-content: center;
+  }
+  .agent-box {
+    background: #111827;
+    border: 1px solid #2d3748;
+    border-radius: 8px;
+    padding: 16px 20px;
+    text-align: center;
+    min-width: 160px;
+  }
+  .agent-icon { font-size: 28px; margin-bottom: 6px; }
+  .agent-name { font-size: 13px; font-weight: 700; }
+  .agent-weight { font-size: 11px; color: #475569; margin-top: 4px; }
+  .flow-arrow { font-size: 20px; color: #334155; margin: 0 16px; }
+  .captain-box {
+    background: #1a1f2e;
+    border: 2px solid #3b82f6;
+    border-radius: 8px;
+    padding: 16px 24px;
+    text-align: center;
+  }
+  .agents-col {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .verdict-pill {
+    display: inline-block;
+    padding: 8px 24px;
+    border-radius: 999px;
+    font-size: 20px;
+    font-weight: 900;
+    margin-top: 8px;
+  }
+  .verdict-red   { background: #3f0f0f; color: #ef4444; border: 2px solid #ef4444; }
+  .verdict-green { background: #052e16; color: #22c55e; border: 2px solid #22c55e; }
+
+  /* Slide 4 — Formula */
+  .formula-box {
+    background: #161b27;
+    border: 1px solid #1e293b;
+    border-radius: 12px;
+    padding: 32px 40px;
+    margin-top: 28px;
+    font-family: 'Courier New', monospace;
+    font-size: 18px;
+    line-height: 2.2;
+  }
+  .f-label { color: #64748b; }
+  .f-val   { color: #60a5fa; font-weight: 700; font-size: 22px; }
+  .f-result { color: #22c55e; font-weight: 900; font-size: 28px; }
+  .threshold-row {
+    display: flex;
+    gap: 16px;
+    margin-top: 24px;
+  }
+  .threshold {
+    flex: 1;
+    border-radius: 8px;
+    padding: 14px 20px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .t-green { background: #052e16; color: #22c55e; border: 1px solid #14532d; }
+  .t-yellow{ background: #1c1400; color: #f59e0b; border: 1px solid #713f12; }
+  .t-red   { background: #1a0505; color: #ef4444; border: 1px solid #7f1d1d; }
+
+  /* Slide 5 — Bob Features */
+  .features-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin-top: 28px;
+  }
+  .feat-card {
+    background: #161b27;
+    border: 1px solid #1e293b;
+    border-radius: 10px;
+    padding: 20px;
+  }
+  .feat-icon { font-size: 24px; margin-bottom: 8px; }
+  .feat-title { font-size: 14px; font-weight: 700; color: #60a5fa; margin-bottom: 6px; }
+  .feat-body { font-size: 12px; color: #64748b; line-height: 1.5; }
+
+  /* Slide 6 — Demo */
+  .demo-cols {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 24px;
+    align-items: center;
+    margin-top: 28px;
+  }
+  .demo-card {
+    background: #161b27;
+    border-radius: 12px;
+    padding: 28px;
+  }
+  .demo-card.before { border: 2px solid #ef4444; }
+  .demo-card.after  { border: 2px solid #22c55e; }
+  .demo-score { font-size: 64px; font-weight: 900; line-height: 1; }
+  .demo-label { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #475569; margin-bottom: 8px; }
+  .demo-list { margin-top: 12px; }
+  .demo-item { font-size: 12px; color: #64748b; padding: 3px 0; }
+  .demo-item.bad  { color: #ef4444; }
+  .demo-item.good { color: #22c55e; }
+  .demo-arrow-col { text-align: center; }
+  .demo-arrow { font-size: 36px; color: #334155; }
+  .demo-delta { font-size: 14px; font-weight: 700; color: #22c55e; margin-top: 8px; }
+
+  /* Slide 7 — Comparison */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 28px;
+  }
+  .compare-table th {
+    font-size: 13px;
+    font-weight: 700;
+    padding: 12px 20px;
+    text-align: center;
+    background: #161b27;
+    border: 1px solid #1e293b;
+    color: #94a3b8;
+  }
+  .compare-table th.hl { background: #1a1f2e; color: #3b82f6; border-color: #3b82f6; }
+  .compare-table td {
+    font-size: 13px;
+    padding: 12px 20px;
+    border: 1px solid #1e293b;
+    text-align: center;
+    color: #64748b;
+  }
+  .compare-table td:first-child { text-align: left; color: #e2e8f0; font-weight: 600; }
+  .compare-table tr:nth-child(even) td { background: #0d1117; }
+  .tick { color: #22c55e; font-size: 16px; font-weight: 900; }
+  .cross { color: #ef4444; font-size: 16px; }
+
+  /* Slide 8 — Close */
+  .close-center { text-align: center; }
+  .close-score-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    margin: 32px 0;
+  }
+  .close-links {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    margin-top: 32px;
+  }
+  .close-link {
+    background: #161b27;
+    border: 1px solid #1e293b;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 13px;
+    color: #94a3b8;
+  }
+
+  @media print {
+    .slide { page-break-after: always; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════ SLIDE 1 — TITLE ═══════════════════════════ -->
+<div class="slide">
+  <div class="eyebrow">IBM Bob 2.0 Hackathon · September 2026</div>
+  <h1>Ship<span class="accent">Safe</span></h1>
+  <div class="title-score">
+    <div>
+      <div class="big-score red">38</div>
+      <div style="font-size:14px;color:#ef4444;margin-top:4px;">🔴 DO NOT SHIP</div>
+    </div>
+    <div class="arrow-big">→</div>
+    <div>
+      <div class="big-score green">92</div>
+      <div style="font-size:14px;color:#22c55e;margin-top:4px;">🟢 SAFE TO SHIP</div>
+    </div>
+    <div style="margin-left:32px;border-left:1px solid #1e293b;padding-left:32px;">
+      <div style="font-size:13px;color:#475569;margin-bottom:8px;">in under</div>
+      <div style="font-size:48px;font-weight:900;color:#60a5fa;">2 min</div>
+    </div>
+  </div>
+  <div class="tagline">One number. One decision. Zero Friday fear.<br>AI-powered release readiness built on IBM Bob 2.0</div>
+  <div class="ibm-tag">Built on IBM Bob 2.0</div>
+  <div class="slide-num">1 / 8</div>
+</div>
+
+<!-- ══════════════════════════ SLIDE 2 — PROBLEM ═════════════════════════ -->
+<div class="slide">
+  <div class="eyebrow">The Problem</div>
+  <h2>Every team fears the <span class="red">Friday release</span></h2>
+  <div class="problem-grid">
+    <div class="prob-card">
+      <div class="prob-icon">😰</div>
+      <div class="prob-title">The Symptom</div>
+      <div class="prob-body">847 SonarQube warnings. 23 Snyk findings. 61% test coverage. What does any of it mean?</div>
+    </div>
+    <div class="prob-card">
+      <div class="prob-icon">⏰</div>
+      <div class="prob-title">The Cost</div>
+      <div class="prob-body">Delay = lost revenue. Guess = production incident at 2am on Saturday.</div>
+    </div>
+    <div class="prob-card">
+      <div class="prob-icon">🎯</div>
+      <div class="prob-title">The Gap</div>
+      <div class="prob-body">Every tool gives a list. Nobody gives a decision. Humans are left to guess.</div>
+    </div>
+  </div>
+  <div class="quote-box">"SonarQube gives you 847 warnings. ShipSafe gives you an answer."</div>
+  <div class="ibm-tag">Built on IBM Bob 2.0</div>
+  <div class="slide-num">2 / 8</div>
+</div>
+
+<!-- ══════════════════════════ SLIDE 3 — SOLUTION ════════════════════════ -->
+<div class="slide">
+  <div class="eyebrow">The Solution</div>
+  <h2>ShipSafe — <span class="accent">AI Release Captain</span></h2>
+  <div class="arch-box">
+    <div class="captain-box">
+      <div style="font-size:32px;">🎖️</div>
+      <div style="font-size:15px;font-weight:700;margin-top:6px;color:#60a5fa;">Captain Mode</div>
+      <div style="font-size:11px;color:#475569;margin-top:4px;">Orchestrator</div>
+    </div>
+    <div class="flow-arrow">⇄</div>
+    <div class="agents-col">
+      <div class="agent-box">
+        <div class="agent-icon">🔒</div>
+        <div class="agent-name">Security Agent</div>
+        <div class="agent-weight">OWASP Top 10 · weight 40%</div>
+      </div>
+      <div class="agent-box">
+        <div class="agent-icon">🔍</div>
+        <div class="agent-name">Quality Agent</div>
+        <div class="agent-weight">Complexity · Dead code · weight 35%</div>
+      </div>
+      <div class="agent-box">
+        <div class="agent-icon">🧪</div>
+        <div class="agent-name">Test Agent</div>
+        <div class="agent-weight">Coverage · Critical paths · weight 25%</div>
+      </div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div style="text-align:center;">
+      <div style="font-size:13px;color:#475569;margin-bottom:12px;">Release Verdict</div>
+      <div class="verdict-pill verdict-red">🔴 38</div>
+      <div style="font-size:20px;color:#334155;margin:8px 0;">↓ auto-fix</div>
+      <div class="verdict-pill verdict-green">🟢 92</div>
+    </div>
+  </div>
+  <div class="ibm-tag">Built on IBM Bob 2.0</div>
+  <div class="slide-num">3 / 8</div>
+</div>
+
+<!-- ═════════════════════════ SLIDE 4 — FORMULA ══════════════════════════ -->
+<div class="slide">
+  <div class="eyebrow">Transparent · Explainable · Defensible</div>
+  <h2>The <span class="accent">Scoring Formula</span></h2>
+  <div class="formula-box">
+    <span class="f-label">Release Score = </span>
+    (<span class="f-val">Security</span> × 0.40) + (<span class="f-val">Quality</span> × 0.35) + (<span class="f-val">Tests</span> × 0.25)<br>
+    <span style="color:#334155;font-size:14px;padding-left:140px;">
+      = (20 × 0.40) + (55 × 0.35) + (8 × 0.25) = <span class="red" style="font-size:22px;font-weight:900;">38</span> &nbsp;→&nbsp;
+      (76 × 0.40) + (85 × 0.35) + (80 × 0.25) = <span class="green" style="font-size:22px;font-weight:900;">92</span>
+    </span>
+  </div>
+  <div class="threshold-row">
+    <div class="threshold t-green">score ≥ 80 &nbsp;→&nbsp; 🟢 SAFE TO SHIP</div>
+    <div class="threshold t-yellow">score 70–79 &nbsp;→&nbsp; 🟡 SHIP WITH CAUTION</div>
+    <div class="threshold t-red">score &lt; 70 &nbsp;→&nbsp; 🔴 DO NOT SHIP</div>
+  </div>
+  <div style="margin-top:20px;font-size:13px;color:#475569;">"Not a black box. Every point is explained. Every deduction is shown."</div>
+  <div class="ibm-tag">Built on IBM Bob 2.0</div>
+  <div class="slide-num">4 / 8</div>
+</div>
+
+<!-- ══════════════════════ SLIDE 5 — IBM BOB FEATURES ════════════════════ -->
+<div class="slide">
+  <div class="eyebrow">Technology</div>
+  <h2>Every <span class="accent">IBM Bob 2.0</span> feature — working together</h2>
+  <div class="features-grid">
+    <div class="feat-card">
+      <div class="feat-icon">🧩</div>
+      <div class="feat-title">4 Custom Modes</div>
+      <div class="feat-body">Captain + 3 specialist agents. Each with scoped tool permissions defined in custom_modes.yaml.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">📚</div>
+      <div class="feat-title">4 Skills + 12 Files</div>
+      <div class="feat-body">OWASP checklist, complexity thresholds, critical path catalogue, scoring formula — loaded automatically.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🤖</div>
+      <div class="feat-title">Parallel Subagents</div>
+      <div class="feat-body">Captain spawns 3 agents simultaneously. Each runs in its own context. True multi-agent AI.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🔌</div>
+      <div class="feat-title">Custom MCP Server</div>
+      <div class="feat-body">5 tools: run_tests, scan_secrets, check_complexity, audit_deps, list_source_files.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">✏️</div>
+      <div class="feat-title">File Auto-Fix</div>
+      <div class="feat-body">Captain writes fixes directly to source files. apply_diff, search_and_replace, execute_command.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">📊</div>
+      <div class="feat-title">HTML Artifact</div>
+      <div class="feat-body">create_html_artifact generates a shareable release report right inside Bob's chat.</div>
+    </div>
+  </div>
+  <div class="ibm-tag">Built on IBM Bob 2.0</div>
+  <div class="slide-num">5 / 8</div>
+</div>
+
+<!-- ════════════════════════ SLIDE 6 — LIVE DEMO ════════════════════════ -->
+<div class="slide">
+  <div class="eyebrow">Live Demo</div>
+  <h2><span class="red">38</span> → <span class="green">92</span> in under <span class="accent">2 minutes</span></h2>
+  <div class="demo-cols">
+    <div class="demo-card before">
+      <div class="demo-label">Before ShipSafe</div>
+      <div class="demo-score red">38</div>
+      <div style="font-size:13px;color:#ef4444;margin-top:6px;">🔴 DO NOT SHIP</div>
+      <div class="demo-list">
+        <div class="demo-item bad">✗ SQL injection in login</div>
+        <div class="demo-item bad">✗ Hardcoded JWT_SECRET</div>
+        <div class="demo-item bad">✗ Password in console.log</div>
+        <div class="demo-item bad">✗ Path traversal vulnerability</div>
+        <div class="demo-item bad">✗ JWT tokens never expire</div>
+        <div class="demo-item bad">✗ 13% test coverage</div>
+      </div>
+    </div>
+    <div class="demo-arrow-col">
+      <div class="demo-arrow">→</div>
+      <div class="demo-delta">+54 pts<br>6 auto-fixes<br>15 tests generated</div>
+    </div>
+    <div class="demo-card after">
+      <div class="demo-label">After ShipSafe</div>
+      <div class="demo-score green">92</div>
+      <div style="font-size:13px;color:#22c55e;margin-top:6px;">🟢 SAFE TO SHIP</div>
+      <div class="demo-list">
+        <div class="demo-item good">✅ Parameterized queries</div>
+        <div class="demo-item good">✅ Secret → process.env</div>
+        <div class="demo-item good">✅ Console.log removed</div>
+        <div class="demo-item good">✅ Path traversal fixed</div>
+        <div class="demo-item good">✅ JWT expiry added</div>
+        <div class="demo-item good">✅ 15 security tests generated</div>
+      </div>
+    </div>
+  </div>
+  <div class="ibm-tag">Built on IBM Bob 2.0</div>
+  <div class="slide-num">6 / 8</div>
+</div>
+
+<!-- ══════════════════════ SLIDE 7 — COMPARISON ═════════════════════════ -->
+<div class="slide">
+  <div class="eyebrow">Why ShipSafe Wins</div>
+  <h2>No tool does <span class="accent">all of this</span></h2>
+  <table class="compare-table">
+    <thead>
+      <tr>
+        <th style="text-align:left;">Capability</th>
+        <th>SonarQube</th>
+        <th>Snyk</th>
+        <th class="hl">ShipSafe</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Gives a single pass/fail decision</td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="tick">✓</span></td></tr>
+      <tr><td>Auto-fixes code automatically</td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="tick">✓</span></td></tr>
+      <tr><td>Generates missing tests</td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="tick">✓</span></td></tr>
+      <tr><td>Multi-agent AI team</td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="tick">✓</span></td></tr>
+      <tr><td>Transparent scoring formula</td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="tick">✓</span></td></tr>
+      <tr><td>Runs inside your IDE</td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="tick">✓</span></td></tr>
+    </tbody>
+  </table>
+  <div class="ibm-tag">Built on IBM Bob 2.0</div>
+  <div class="slide-num">7 / 8</div>
+</div>
+
+<!-- ════════════════════════ SLIDE 8 — CLOSE ════════════════════════════ -->
+<div class="slide">
+  <div class="close-center">
+    <div class="eyebrow" style="text-align:center;">IBM Bob 2.0 Hackathon · September 2026</div>
+    <h1>Ship<span class="accent">Safe</span></h1>
+    <div class="close-score-row">
+      <div>
+        <div style="font-size:72px;font-weight:900;color:#ef4444;">38</div>
+        <div style="color:#ef4444;font-weight:700;">🔴 DO NOT SHIP</div>
+      </div>
+      <div style="font-size:40px;color:#334155;">→</div>
+      <div>
+        <div style="font-size:72px;font-weight:900;color:#22c55e;">92</div>
+        <div style="color:#22c55e;font-weight:700;">🟢 SAFE TO SHIP</div>
+      </div>
+    </div>
+    <div style="font-size:22px;color:#64748b;font-style:italic;">
+      "One number. One decision. Zero Friday fear."
+    </div>
+    <div class="close-links">
+      <div class="close-link">🔗 github.com/DangerRohit84/ShipSafe</div>
+      <div class="close-link">🤖 Built on IBM Bob 2.0</div>
+      <div class="close-link">🏆 IBM Bob 2.0 Hackathon</div>
+    </div>
+  </div>
+  <div class="slide-num">8 / 8</div>
+</div>
+
+</body>
+</html>
